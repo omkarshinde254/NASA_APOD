@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const user = require('./models/user.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+require('dotenv').config();
 
 // Enable CORS
 app.use(cors());
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://dbuser:password@atlascluster.8jvouzs.mongodb.net/nasa_apod');
+mongoose.connect(`mongodb+srv://${process.env.DBUSER}:${process.env.DBPASSWORD}@${process.env.CLUSTRNAME}`);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
