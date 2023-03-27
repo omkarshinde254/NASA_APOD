@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const user = require('./models/user.model');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 // Enable CORS
 app.use(cors());
@@ -20,17 +21,18 @@ app.get('/', (req, res) => {
 
 app.post('/api/register', async (req, res) => {
     try {
-        console.log('Register User API called');
-        res.send({ 'status': 'success' });
+        // console.log('Register User API called');
+        const newPass = await bcrypt.hash(req.body.password, 10);
         const u = await user.create({
             name: req.body.name,
             email: req.body.email,
-            password: req.body.password
+            password: newPass
         })
-        console.log("MongoDB: " + u);
-        console.log(req.body);
+        res.send({ 'status': 'success' });
+        // console.log("MongoDB: " + u);
+        // console.log(req.body);
     } catch (error) {
-        console.log(error);
+        // console.log("Error- ",error);
         res.send({ 'status': 'error' });
     }
 });
@@ -39,17 +41,23 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     const u = await user.findOne({
         email: req.body.email,
-        password: req.body.password
+        // password: req.body.password
     })
 
-    if (u) {
+    if (!u) {
+        res.send({ 'status': 'error' });
+    }
+
+    const isValidPass = await bcrypt.compare(req.body.password, u.password);
+
+    if (isValidPass) {
         const token = jwt.sign(
             {
                 name: u.name
             }, 'secret', { expiresIn: '1h' }
         )
 
-        res.send({ 'status': 'success', 'user': token});
+        res.send({ 'status': 'success', 'user': token });
     } else {
         res.send({ 'status': 'error' });
     }

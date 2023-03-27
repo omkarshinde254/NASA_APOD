@@ -9,6 +9,7 @@ const App = () => {
     <div>
       <BrowserRouter>
         <Routes>
+          <Route path="/" exact element={<Login/>} />
           <Route path="/login" exact element={<Login/>} />
           <Route path="/register" exact element={<Register/>} />
           <Route path="/home" exact element={<Home/>} />
