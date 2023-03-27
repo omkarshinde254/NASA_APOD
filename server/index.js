@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://dbuser:ZhEsjLIyd3fAejMJ@atlascluster.8jvouzs.mongodb.net/nasa_apod');
+mongoose.connect('mongodb+srv://dbuser:password@atlascluster.8jvouzs.mongodb.net/nasa_apod');
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
