@@ -1,17 +1,9 @@
 import React, { useEffect } from "react";
-// import jwt from 'jsonwebtoken';
 import { useNavigate } from "react-router-dom";
 
-function app () {
-    return (
-        <div>
-            <h1>Hello World</h1>
-        </div>
-    );
-}
 
-/*
-function app () {
+
+const Home = () => {
     const navigate = useNavigate();
 
     function apod() {
@@ -21,8 +13,9 @@ function app () {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            const user = jwt.decode(token);
-            if (user){
+            const user = JSON.parse(atob(token.split('.')[1]));
+            console.log("Decoded Token", user);
+            if (user) {
                 console.log(user);
             }
             else {
@@ -30,13 +23,15 @@ function app () {
                 navigate('/login');
             }
         }
+        else {
+            navigate('/login');
+        }
     }, []);
 
-
+    return (
     <div>
-      <h1>Hello World</h1>
-    </div>
+        <h1>Hello World</h1>
+    </div>)
+};
 
-}
-*/
-export default app;
+export default Home;
