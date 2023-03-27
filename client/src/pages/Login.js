@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 function App() {
-  const [name, setName] = useState('');
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -21,6 +22,16 @@ function App() {
 
     const data = await response.json();
     console.log(data);
+    if (data.status === 'success' && data.user) {
+      console.log('Login Successful');
+      localStorage.setItem('token', data.user)
+      alert('Login Successful');
+      navigate('/home');
+    }
+    else {
+      console.log('Login Failed');
+      alert('Invalid username or password');
+    }
   }
 
   return (

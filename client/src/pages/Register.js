@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 function App() {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,7 +23,16 @@ function App() {
     })
 
     const data = await response.json();
-    console.log(data);
+    if (data.status === 'success') {
+      console.log('Registration Successful');
+      alert('Registration Successful');
+      navigate('/login');
+    }
+    else {
+      console.log('Registration Failed');
+      alert('Registration Failed, Something went wrong');
+    }
+
   }
 
   return (
