@@ -17,6 +17,7 @@ const Home = () => {
     }
 
     async function download_img(url) {
+        M.toast({ html: 'Downloading ...', classes: 'green black-text' })
         const name = url.split('/').pop();
         // console.log(name);
         let proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
