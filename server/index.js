@@ -40,26 +40,37 @@ app.post('/api/register', async (req, res) => {
 
 
 app.post('/api/login', async (req, res) => {
-    const u = await user.findOne({
-        email: req.body.email,
-        // password: req.body.password
-    })
+    try {
+        if (!req.body.email || !req.body.password) {
+            res.send({ 'status': 'error' });
+            return;
+        }
 
-    if (!u) {
-        res.send({ 'status': 'error' });
-    }
+        const u = await user.findOne({
+            email: req.body.email,
+            // password: req.body.password
+        })
 
-    const isValidPass = await bcrypt.compare(req.body.password, u.password);
+        if (!u) {
+            res.send({ 'status': 'error' });
+            return;
+        }
 
-    if (isValidPass) {
-        const token = jwt.sign(
-            {
-                name: u.name
-            }, process.env.JWT_SECRET, { expiresIn: '1h' }
-        )
+        const isValidPass = await bcrypt.compare(req.body.password, u.password);
 
-        res.send({ 'status': 'success', 'user': token });
-    } else {
+        if (isValidPass) {
+            const token = jwt.sign(
+                {
+                    name: u.name
+                }, process.env.JWT_SECRET, { expiresIn: '1h' }
+            )
+
+            res.send({ 'status': 'success', 'user': token });
+        } else {
+            res.send({ 'status': 'error' });
+            return;
+        }
+    } catch (error) {
         res.send({ 'status': 'error' });
     }
 

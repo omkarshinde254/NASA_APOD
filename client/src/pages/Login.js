@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import 'materialize-css/dist/css/materialize.min.css';
 import M from 'materialize-css';
 import gouth from '../img/btn_google_signin.png';
-import { GoogleLogin } from 'react-google-login';
-// import env from 'react-dotenv';
+import { useEffect } from "react";
 
 function App() {
   const navigate = useNavigate();
@@ -44,6 +43,7 @@ function App() {
 
   function responseGoogle(response) {
     console.log(response);
+    console.log("Google Login");
   }
 
   function navigateToRegister() {
@@ -88,18 +88,7 @@ function App() {
               </div>
             </center>
             <div className='divider' ></div>
-            {/* <img className='col s12 waves-effect' style={{ padding: '10px 0px 0px 0px' }} src={gouth} onClick={navigateGoogleAuth}></img> */}
-
-            <GoogleLogin
-              client_id={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-              render={renderProps => (
-                <img className='col s12 waves-effect' style={{ padding: '10px 0px 0px 0px' }} src={gouth}></img>
-              )}
-              onSuccess={responseGoogle}
-              onFailure={responseGoogle}
-              cookiePolicy={'single_host_origin'}
-              isSignedIn={true}
-            />
+            <img className='col s12 waves-effect' style={{ padding: '10px 0px 0px 0px' }} src={gouth} onClick={navigateGoogleAuth}></img>
 
           </form>
         </div>
