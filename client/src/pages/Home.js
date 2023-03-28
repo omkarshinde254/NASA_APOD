@@ -94,7 +94,9 @@ const Home = () => {
         <div className="row" style={{ padding: "0px 0px 0px 0px" }}>
             <div className="col s10" style={{ padding: "2px 2px 2px 2px" }}>
                 <img src={apod_data.url}
-                    style={{ width: "100%", height: "99vh" }}>
+                    style={{ width: "100%", height: "99vh" }}
+                    alt="Hmm ... Maybe Image is not available for this date."
+                    >
                 </img>
             </div>
             <div className="col s2 left-align" style={{ paddingLeft: "20px" }}>
