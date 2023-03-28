@@ -3,14 +3,42 @@ import { useNavigate } from "react-router-dom";
 import 'materialize-css/dist/css/materialize.min.css';
 import M from 'materialize-css';
 import gouth from '../img/btn_google_signin.png';
-import { useEffect } from "react";
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 
 function App() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  async function loginUser(e) {
+  async function loginUser_outh(oauth) {
+    console.log('User Login Oauth');
+    const response = await fetch('http://localhost:3001/api/login_outh', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        oauth
+      }),
+    })
+
+
+    const data = await response.json();
+    console.log(data);
+    if (data.status === 'success' && data.user) {
+      localStorage.setItem('token', data.user)
+      if (data.createuser) {
+        M.toast({ html: 'Created User', classes: 'green black-text' })
+      }
+      M.toast({ html: 'Login Successfull', classes: 'green black-text' })
+      navigate('/home');
+    }
+    else {
+      M.toast({ html: 'Invalid username or password', classes: 'red black-text' })
+    }
+  }
+
+  async function loginUser(oauth, e) {
     e.preventDefault();
     console.log('User Login');
     const response = await fetch('http://localhost:3001/api/login', {
@@ -21,6 +49,7 @@ function App() {
       body: JSON.stringify({
         email,
         password,
+        oauth
       }),
     })
 
@@ -41,11 +70,6 @@ function App() {
     }
   }
 
-  function responseGoogle(response) {
-    console.log(response);
-    console.log("Google Login");
-  }
-
   function navigateToRegister() {
     navigate('/register');
   }
@@ -63,7 +87,7 @@ function App() {
         <div className="section"></div>
 
         <div className="z-depth-1 grey lighten-4 row" style={{ display: "inline-block", padding: "22px 48px 25px 48px", border: "1px solid #EEE", width: "25%" }}>
-          <form className="col s12" onSubmit={loginUser}>
+          <form className="col s12" onSubmit={(e) => loginUser(null, e)}>
             <div className='row'></div>
 
             <div className='row'>
@@ -88,13 +112,27 @@ function App() {
               </div>
             </center>
             <div className='divider' ></div>
-            <img className='col s12 waves-effect' style={{ padding: '10px 0px 0px 0px' }} src={gouth} onClick={navigateGoogleAuth}></img>
+            {/* <img className='col s12 waves-effect' style={{ padding: '10px 0px 0px 0px' }} src={gouth} onClick={navigateGoogleAuth}></img> */}
+
+            <div style={{ padding: '10px 0px 0px 0px' }} >
+              <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+                <GoogleLogin
+                  onSuccess={credentialResponse => {
+                    loginUser_outh(credentialResponse)
+                    console.log(credentialResponse);
+                  }}
+                  onError={() => {
+                    console.log('Login Failed');
+                    M.toast({ html: 'Login Failed, Something went wrong', classes: 'red black-text' });
+                  }}
+                />
+              </GoogleOAuthProvider>
+            </div>
 
           </form>
         </div>
       </center>
 
-      <div className="section"></div>
       <div className="section"></div>
     </main>
   );

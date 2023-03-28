@@ -27,7 +27,8 @@ app.post('/api/register', async (req, res) => {
         const u = await user.create({
             name: req.body.name,
             email: req.body.email,
-            password: newPass
+            password: newPass,
+            oauth: 'N'
         })
         res.send({ 'status': 'success' });
         // console.log("MongoDB: " + u);
@@ -74,6 +75,61 @@ app.post('/api/login', async (req, res) => {
         res.send({ 'status': 'error' });
     }
 
+});
+
+
+app.post('/api/login_outh', async (req, res) => {
+    try {
+        var createuser = false;
+        if (!req.body.oauth) {
+            res.send({ 'status': 'error' });
+            return;
+        }
+
+        token = jwt.decode(req.body.oauth.credential);
+        // console.log("Oauth-- ",req.body.oauth.credential);
+        // console.log("Token-- ",token);
+
+        const u = await user.findOne({
+            email: token.email,
+            oauth: 'Y'
+            // password: req.body.password
+        })
+
+        if (!u) {
+            // console.log('Register User API called');
+            const u = await user.create({
+                name: token.name,
+                email: token.email,
+                oauth: 'Y'
+            })
+            createuser = true;
+        }
+        const new_token = jwt.sign(
+            {
+                name: token.name
+            }, process.env.JWT_SECRET, { expiresIn: '1h' }
+        )
+
+        res.send({ 'status': 'success', 'user': new_token, 'createuser': createuser });
+    } catch (error) {
+        console.log("Error- ", error)
+        res.send({ 'status': 'error' });
+    }
+
+});
+
+app.get('/api/nasa_apod', async (req, res) => {
+    try {
+        const response = await fetch('https://api.nasa.gov/planetary/apod?api_key=' + process.env.NASA_APOD_KEY);
+        const data = await response.json();
+        console.log(data);
+        res.send(data);
+
+    } catch (error) {
+        console.log("Error- ", error)
+        res.send({ 'status': 'error' });
+    }
 });
 
 app.listen(3001, () => {

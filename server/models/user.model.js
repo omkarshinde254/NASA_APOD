@@ -12,8 +12,13 @@ const user = new mongoose.Schema({
     },
     password: {
         type: String,
+        required: false
+    },
+    oauth: {
+        type: String,
         required: true
     }
+
 },
 {collection: 'user-data'}
 );

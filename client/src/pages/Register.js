@@ -2,12 +2,47 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'materialize-css/dist/css/materialize.min.css';
 import M from 'materialize-css';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { hasGrantedAllScopesGoogle } from '@react-oauth/google';
 
 function RegistrationForm() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const hasAccess = hasGrantedAllScopesGoogle(
+    // tokenResponse,
+    'email',
+    'user',
+  );
+
+  async function loginUser_outh(oauth) {
+    console.log('User Login Oauth');
+    const response = await fetch('http://localhost:3001/api/login_outh', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        oauth
+      }),
+    })
+
+
+    const data = await response.json();
+    console.log(data);
+    if (data.status === 'success' && data.user) {
+      localStorage.setItem('token', data.user)
+      if (data.createuser) {
+        M.toast({ html: 'Created User', classes: 'green black-text' })
+      }
+      M.toast({ html: 'Login Successfull', classes: 'green black-text' })
+      navigate('/home');
+    }
+    else {
+      M.toast({ html: 'Invalid username or password', classes: 'red black-text' })
+    }
+  }
 
   async function registerUser(e) {
     e.preventDefault();
@@ -100,8 +135,8 @@ function RegistrationForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                </div>
-              <label style={{float: "right"}}>
+              </div>
+              <label style={{ float: "right" }}>
                 <a className='blue-text' href="" onClick={navigateToLogin}><b>Login</b></a>
               </label>
             </div>
@@ -118,11 +153,26 @@ function RegistrationForm() {
                 </button>
               </div>
             </center>
+            <div className='divider'></div>
+            <div style={{ padding: '10px 0px 0px 0px' }} >
+              <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+                <GoogleLogin
+                  onSuccess={credentialResponse => {
+                    loginUser_outh(credentialResponse)
+                    // console.log(credentialResponse.email);
+                  }}
+                  onError={() => {
+                    console.log('Login Failed');
+                    M.toast({ html: 'Registration Failed, Something went wrong', classes: 'red black-text' });
+                  }}
+                />
+              </GoogleOAuthProvider>
+            </div>
+
           </form>
         </div>
       </center>
 
-      <div className="section"></div>
       <div className="section"></div>
     </main>
   );
