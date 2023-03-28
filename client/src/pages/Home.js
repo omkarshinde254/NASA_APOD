@@ -59,7 +59,7 @@ const Home = () => {
         }
 
         // console.log(date_ctr)
-        apod();
+        await apod();
     }
 
     useEffect(() => {
@@ -85,8 +85,8 @@ const Home = () => {
             navigate('/login');
             return;
         }
-    }, []);
     apod();
+    }, []);
     const usertoken = JSON.parse(atob(localStorage.getItem('token').split('.')[1]));
     // setUserToken(user);
 
