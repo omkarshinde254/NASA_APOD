@@ -22,6 +22,10 @@ app.get('/', (req, res) => {
 
 app.post('/api/register', async (req, res) => {
     try {
+        if (!req.body.name || !req.body.email || !req.body.password) {
+            res.send({ 'status': 'error' });
+            return;
+        }
         // console.log('Register User API called');
         const newPass = await bcrypt.hash(req.body.password, 10);
         const u = await user.create({
@@ -113,7 +117,7 @@ app.post('/api/login_outh', async (req, res) => {
 
         res.send({ 'status': 'success', 'user': new_token, 'createuser': createuser });
     } catch (error) {
-        console.log("Error- ", error)
+        // console.log("Error- ", error)
         res.send({ 'status': 'error' });
     }
 
@@ -121,17 +125,23 @@ app.post('/api/login_outh', async (req, res) => {
 
 app.get('/api/nasa_apod', async (req, res) => {
     try {
-        const response = await fetch('https://api.nasa.gov/planetary/apod?api_key=' + process.env.NASA_APOD_KEY);
+        // console.log("Calling for date- ", req.query.date)
+        const response = await fetch('https://api.nasa.gov/planetary/apod?'
+        + new URLSearchParams({
+                'date': req.query.date,
+                'api_key': process.env.NASA_APOD_KEY,
+            })
+        );
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         res.send(data);
 
     } catch (error) {
-        console.log("Error- ", error)
+        // console.log("Error- ", error)
         res.send({ 'status': 'error' });
     }
 });
 
 app.listen(3001, () => {
-    console.log('Example app listening on port 3000!');
+    console.log('App Started');
 });

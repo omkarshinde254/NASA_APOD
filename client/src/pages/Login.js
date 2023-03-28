@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import 'materialize-css/dist/css/materialize.min.css';
+// import 'materialize-css/dist/css/materialize.min.css';
 import M from 'materialize-css';
 import gouth from '../img/btn_google_signin.png';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
@@ -11,7 +11,7 @@ function App() {
   const [password, setPassword] = useState('');
 
   async function loginUser_outh(oauth) {
-    console.log('User Login Oauth');
+    // console.log('User Login Oauth');
     const response = await fetch('http://localhost:3001/api/login_outh', {
       method: 'POST',
       headers: {
@@ -24,7 +24,7 @@ function App() {
 
 
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     if (data.status === 'success' && data.user) {
       localStorage.setItem('token', data.user)
       if (data.createuser) {
@@ -40,7 +40,7 @@ function App() {
 
   async function loginUser(oauth, e) {
     e.preventDefault();
-    console.log('User Login');
+    // console.log('User Login');
     const response = await fetch('http://localhost:3001/api/login', {
       method: 'POST',
       headers: {
@@ -55,7 +55,7 @@ function App() {
 
 
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     if (data.status === 'success' && data.user) {
       // console.log('Login Successful');
       localStorage.setItem('token', data.user)
@@ -119,10 +119,10 @@ function App() {
                 <GoogleLogin
                   onSuccess={credentialResponse => {
                     loginUser_outh(credentialResponse)
-                    console.log(credentialResponse);
+                    // console.log(credentialResponse);
                   }}
                   onError={() => {
-                    console.log('Login Failed');
+                    // console.log('Login Failed');
                     M.toast({ html: 'Login Failed, Something went wrong', classes: 'red black-text' });
                   }}
                 />

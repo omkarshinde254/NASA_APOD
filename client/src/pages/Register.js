@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import 'materialize-css/dist/css/materialize.min.css';
 import M from 'materialize-css';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { hasGrantedAllScopesGoogle } from '@react-oauth/google';
@@ -17,7 +16,7 @@ function RegistrationForm() {
   );
 
   async function loginUser_outh(oauth) {
-    console.log('User Login Oauth');
+    // console.log('User Login Oauth');
     const response = await fetch('http://localhost:3001/api/login_outh', {
       method: 'POST',
       headers: {
@@ -30,7 +29,7 @@ function RegistrationForm() {
 
 
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     if (data.status === 'success' && data.user) {
       localStorage.setItem('token', data.user)
       if (data.createuser) {
@@ -46,7 +45,7 @@ function RegistrationForm() {
 
   async function registerUser(e) {
     e.preventDefault();
-    console.log('registerUser');
+    // console.log('registerUser');
     const response = await fetch('http://localhost:3001/api/register', {
       method: 'POST',
       headers: {
@@ -104,6 +103,7 @@ function RegistrationForm() {
                   type="text"
                   name="name"
                   id="name"
+                  required="" aria-required="true"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -118,6 +118,7 @@ function RegistrationForm() {
                   type="email"
                   name="email"
                   id="email"
+                  required="" aria-required="true"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -132,6 +133,7 @@ function RegistrationForm() {
                   type="password"
                   name="password"
                   id="password"
+                  required="" aria-required="true"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -162,7 +164,7 @@ function RegistrationForm() {
                     // console.log(credentialResponse.email);
                   }}
                   onError={() => {
-                    console.log('Login Failed');
+                    // console.log('Login Failed');
                     M.toast({ html: 'Registration Failed, Something went wrong', classes: 'red black-text' });
                   }}
                 />
