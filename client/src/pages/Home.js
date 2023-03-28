@@ -5,6 +5,7 @@ import { saveAs } from 'file-saver';
 
 
 const Home = () => {
+    const baseurl = process.env.REACT_APP_BASE_URL;
     const [apod_data, setApodData] = useState({});
     const navigate = useNavigate();
     const [date_ctr, setDateCtr] = useState(0);
@@ -31,7 +32,7 @@ const Home = () => {
         if (fetch_date > new Date()) {
             fetch_date = new Date();
         }
-        const response = await fetch('http://localhost:3001/api/nasa_apod?'
+        const response = await fetch(baseurl + '/api/nasa_apod?'
             + new URLSearchParams({ date: fetch_date.toISOString().split('T')[0] })
             , {
                 method: 'GET',

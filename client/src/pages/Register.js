@@ -5,6 +5,7 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { hasGrantedAllScopesGoogle } from '@react-oauth/google';
 
 function RegistrationForm() {
+  const baseurl = process.env.REACT_APP_BASE_URL;
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ function RegistrationForm() {
 
   async function loginUser_outh(oauth) {
     // console.log('User Login Oauth');
-    const response = await fetch('http://localhost:3001/api/login_outh', {
+    const response = await fetch(baseurl + '/api/login_outh', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -46,7 +47,7 @@ function RegistrationForm() {
   async function registerUser(e) {
     e.preventDefault();
     // console.log('registerUser');
-    const response = await fetch('http://localhost:3001/api/register', {
+    const response = await fetch(baseurl + '/api/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
