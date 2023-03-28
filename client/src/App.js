@@ -3,8 +3,21 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import { gapi } from 'gapi-script';
+import { useEffect } from "react";
 
 const App = () => {
+  useEffect(() => {
+    function start() {
+      gapi.client.init({
+        client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+        scope : 'profile email'
+      })
+    };
+
+    gapi.load('client:auth2', start);
+  });
+
   return (
     <div>
       <BrowserRouter>
@@ -18,5 +31,7 @@ const App = () => {
     </div>
   );
 }
+
+
 
 export default App;

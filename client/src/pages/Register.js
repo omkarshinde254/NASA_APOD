@@ -53,7 +53,7 @@ function RegistrationForm() {
           className="z-depth-1 grey lighten-4 row"
           style={{
             display: 'inline-block',
-            padding: '32px 48px 0px 48px',
+            padding: '22px 48px 25px 48px',
             border: '1px solid #EEE',
             width: '25%'
           }}

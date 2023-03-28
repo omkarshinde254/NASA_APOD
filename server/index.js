@@ -55,7 +55,7 @@ app.post('/api/login', async (req, res) => {
         const token = jwt.sign(
             {
                 name: u.name
-            }, 'secret', { expiresIn: '1h' }
+            }, process.env.JWT_SECRET, { expiresIn: '1h' }
         )
 
         res.send({ 'status': 'success', 'user': token });
@@ -64,7 +64,6 @@ app.post('/api/login', async (req, res) => {
     }
 
 });
-
 
 app.listen(3001, () => {
     console.log('Example app listening on port 3000!');
