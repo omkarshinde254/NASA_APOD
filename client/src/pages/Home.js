@@ -27,7 +27,7 @@ const Home = () => {
 
     async function apod() {
         // console.log('Calling apod api');
-        const fetch_date = new Date()
+        var fetch_date = new Date()
         // console.log("Fetch Date", fetch_date);
         fetch_date.setDate(fetch_date.getDate() + count);
         if (fetch_date > new Date()) {
@@ -88,7 +88,7 @@ const Home = () => {
                 // setUserToken(JSON.parse(atob(localStorage.getItem('token').split('.')[1])));
                 // const usertoken = 
                 // setUserToken(user);
-                console.log("Setting  up user state")
+                // console.log("Setting  up user state")
             }
             else {
                 localStorage.removeItem('token');
