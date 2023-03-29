@@ -8,7 +8,7 @@ const Home = () => {
     const baseurl = process.env.REACT_APP_BASE_URL;
     const [apod_data, setApodData] = useState({});
     const navigate = useNavigate();
-    const [date_ctr, setDateCtr] = useState(0);
+    const [count, setDateCtr] = useState(() => { return 0 });
     // const [usertoken, setUserToken] = useState(null);
 
     function logout() {
@@ -29,7 +29,7 @@ const Home = () => {
         // console.log('Calling apod api');
         const fetch_date = new Date()
         // console.log("Fetch Date", fetch_date);
-        fetch_date.setDate(fetch_date.getDate() + date_ctr);
+        fetch_date.setDate(fetch_date.getDate() + count);
         if (fetch_date > new Date()) {
             fetch_date = new Date();
         }
@@ -46,21 +46,36 @@ const Home = () => {
         setApodData(data);
     }
 
-    async function onClickHandler(v) {
-        if (v === 'l') {
-            await setDateCtr(date_ctr - 1);
+    function incrementDateCtr() {
+        setDateCtr(prevCount => prevCount + 1);
+        if (count > 0) {
+            setDateCtr(prevCount => prevCount - prevCount);
         }
-        else if (v === 'r') {
-            await setDateCtr(date_ctr + 1);
-        }
-
-        if (date_ctr > 0) {
-            await setDateCtr(0);
-        }
-
-        // console.log(date_ctr)
-        await apod();
     }
+
+    function decrementDateCtr() {
+        setDateCtr(prevCount => prevCount - 1);
+    }
+
+    useEffect(() => {
+        apod();
+    }, [count]);
+
+    // async function onClickHandler(v) {
+    //     if (v === 'l') {
+    //         await setDateCtr(date_ctr - 1);
+    //     }
+    //     else if (v === 'r') {
+    //         await setDateCtr(date_ctr + 1);
+    //     }
+
+    //     if (date_ctr > 0) {
+    //         await setDateCtr(0);
+    //     }
+
+    //     // console.log(date_ctr)
+    //     await apod();
+    // }
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -68,7 +83,7 @@ const Home = () => {
             const user = JSON.parse(atob(token.split('.')[1]));
             // console.log("Decoded Token", user);
             if (user) {
-                // void 0;
+                void 0;
                 // console.log("Returning user");
                 // setUserToken(JSON.parse(atob(localStorage.getItem('token').split('.')[1])));
                 // const usertoken = 
@@ -111,7 +126,7 @@ const Home = () => {
                     <div className="row">
                         <div className="col s6 center-align">
                             <button className="btn waves-effect pink" style={{ width: "50%" }}
-                                onClick={(e) => onClickHandler('l')}
+                                onClick={(e) => decrementDateCtr()}
                             // onClick={apod}
                             >
                                 <i className="material-icons" style={{ fontSize: "20px" }}>chevron_left</i>
@@ -119,7 +134,7 @@ const Home = () => {
                         </div>
                         <div className="col s6 center-align">
                             <button className="btn waves-effect pink" style={{ width: "50%" }}
-                                onClick={(e) => onClickHandler('r')}
+                                onClick={(e) => incrementDateCtr()}
                             // onClick={apod}
                             >
                                 <i className="material-icons" style={{ fontSize: "20px" }}>chevron_right</i>
