@@ -27,14 +27,24 @@ const Home = () => {
 
     async function apod() {
         // console.log('Calling apod api');
-        var fetch_date = new Date()
+        let fetch_date = new Date()
         // console.log("Fetch Date", fetch_date);
+        // console.log("Count", count);
         fetch_date.setDate(fetch_date.getDate() + count);
         if (fetch_date > new Date()) {
             fetch_date = new Date();
         }
+        let offset = fetch_date.getTimezoneOffset();
+        fetch_date.setMinutes(fetch_date.getMinutes() - offset);
+        let year = fetch_date.getFullYear();
+        let month = (fetch_date.getMonth() + 1).toString().padStart(2, "0");
+        let day = fetch_date.getDate().toString().padStart(2, "0");
+        let estfetch_date = `${year}-${month}-${day}`;
+        // console.log(estfetch_date);
+
+        // console.log("Final Fetch Date", fetch_date.toISOString().split('T')[0]);
         const response = await fetch(baseurl + '/api/nasa_apod?'
-            + new URLSearchParams({ date: fetch_date.toISOString().split('T')[0] })
+            + new URLSearchParams({ date: estfetch_date })
             , {
                 method: 'GET',
                 headers: {
@@ -59,6 +69,15 @@ const Home = () => {
 
     useEffect(() => {
         apod();
+    }, [count]);
+
+    useEffect(() => {
+        if (count == 0) {
+            document.getElementById('forward_date').classList.add('disabled');
+        }
+        else {
+            document.getElementById('forward_date').classList.remove('disabled');
+        }
     }, [count]);
 
     // async function onClickHandler(v) {
@@ -100,7 +119,7 @@ const Home = () => {
             navigate('/login');
             return;
         }
-    apod();
+        apod();
     }, []);
     const usertoken = JSON.parse(atob(localStorage.getItem('token').split('.')[1]));
     // setUserToken(user);
@@ -111,7 +130,7 @@ const Home = () => {
                 <img src={apod_data.url}
                     style={{ width: "100%", height: "99vh" }}
                     alt="Hmm ... Maybe Image is not available for this date."
-                    >
+                >
                 </img>
             </div>
             <div className="col s2 left-align" style={{ paddingLeft: "20px" }}>
@@ -135,6 +154,7 @@ const Home = () => {
                         <div className="col s6 center-align">
                             <button className="btn waves-effect pink" style={{ width: "50%" }}
                                 onClick={(e) => incrementDateCtr()}
+                                id="forward_date"
                             // onClick={apod}
                             >
                                 <i className="material-icons" style={{ fontSize: "20px" }}>chevron_right</i>
