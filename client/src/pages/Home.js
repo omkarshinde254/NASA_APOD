@@ -11,10 +11,16 @@ const Home = () => {
     const [count, setDateCtr] = useState(() => { return 0 });
     // const [usertoken, setUserToken] = useState(null);
 
-    function logout() {
-        localStorage.removeItem('token');
-        navigate('/login');
-    }
+    // function logout() {
+    //     localStorage.removeItem('token');
+    //     navigate('/login');
+    // }
+
+    const options = {}
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.datepicker');
+        var instances = M.Datepicker.init(elems, options);
+    });
 
     async function download_img(url) {
         M.toast({ html: 'Downloading ...', classes: 'green black-text' })
@@ -97,31 +103,31 @@ const Home = () => {
     // }
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const user = JSON.parse(atob(token.split('.')[1]));
-            // console.log("Decoded Token", user);
-            if (user) {
-                void 0;
-                // console.log("Returning user");
-                // setUserToken(JSON.parse(atob(localStorage.getItem('token').split('.')[1])));
-                // const usertoken = 
-                // setUserToken(user);
-                // console.log("Setting  up user state")
-            }
-            else {
-                localStorage.removeItem('token');
-                navigate('/login');
-                return;
-            }
-        }
-        else {
-            navigate('/login');
-            return;
-        }
+        // const token = localStorage.getItem('token');
+        // if (token) {
+        //     const user = JSON.parse(atob(token.split('.')[1]));
+        //     // console.log("Decoded Token", user);
+        //     if (user) {
+        //         void 0;
+        //         // console.log("Returning user");
+        //         // setUserToken(JSON.parse(atob(localStorage.getItem('token').split('.')[1])));
+        //         // const usertoken = 
+        //         // setUserToken(user);
+        //         // console.log("Setting  up user state")
+        //     }
+        //     else {
+        //         localStorage.removeItem('token');
+        //         navigate('/login');
+        //         return;
+        //     }
+        // }
+        // else {
+        //     navigate('/login');
+        //     return;
+        // }
         apod();
     }, []);
-    const usertoken = JSON.parse(atob(localStorage.getItem('token').split('.')[1]));
+    // const usertoken = JSON.parse(atob(localStorage.getItem('token').split('.')[1]));
     // setUserToken(user);
 
     return (
@@ -135,29 +141,29 @@ const Home = () => {
             </div>
             <div className="col s2 left-align" style={{ paddingLeft: "20px" }}>
                 <div className="row">
-                    <h5 className="pink-text">Hey {usertoken.name}!</h5>
+                    <h5 className="pink-text center-align">-- Welcome to --</h5>
                 </div>
-
                 <div className="row">
                     <h6 className="font-bold indigo-text">Astronomy Picture of the Day</h6>
                     {/* <div className="divider"></div> */}
+                    <input type="text" class="datepicker" />
                     <br></br>
                     <div className="row">
                         <div className="col s6 center-align">
-                            <button className="btn waves-effect pink" style={{ width: "50%" }}
+                            <button className="btn waves-effect pink" style={{ width: "70%" }}
                                 onClick={(e) => decrementDateCtr()}
                             // onClick={apod}
                             >
-                                <i className="material-icons" style={{ fontSize: "20px" }}>chevron_left</i>
+                                <i className="material-icons" style={{ fontSize: "25px" }}>chevron_left</i>
                             </button>
                         </div>
                         <div className="col s6 center-align">
-                            <button className="btn waves-effect pink" style={{ width: "50%" }}
+                            <button className="btn waves-effect pink" style={{ width: "70%" }}
                                 onClick={(e) => incrementDateCtr()}
                                 id="forward_date"
                             // onClick={apod}
                             >
-                                <i className="material-icons" style={{ fontSize: "20px" }}>chevron_right</i>
+                                <i className="material-icons" style={{ fontSize: "25px" }}>chevron_right</i>
                             </button>
                         </div>
                     </div>
@@ -168,7 +174,7 @@ const Home = () => {
                 </div>
 
                 <div className="row right-align">
-                    <div className="col s2" style={{ position: "fixed", bottom: "20vh", right: "0", width: "100%" }}>
+                    <div className="col s2" style={{ position: "fixed", bottom: "10vh", right: "0", width: "100%" }}>
                         <button className="btn btn-large waves-effect orange" style={{ width: "15.5%" }}
                             onClick={() => download_img(apod_data.hdurl)}
                         >
@@ -178,7 +184,7 @@ const Home = () => {
                 </div>
 
                 <div className="row right-align">
-                    <div className="col s2" style={{ position: "fixed", bottom: "10vh", right: "0", width: "100%" }}>
+                    <div className="col s2" style={{ position: "fixed", bottom: "1vh", right: "0", width: "100%" }}>
                         <button className="btn btn-large waves-effect green" style={{ width: "15.5%" }}
                             onClick={() => download_img(apod_data.url)} >
                             Download <i className="material-icons" style={{ fontSize: "20px" }}>file_download</i>
@@ -187,13 +193,13 @@ const Home = () => {
                 </div>
 
 
-                <div className="row right-align">
+                {/* <div className="row right-align">
                     <div className="col s2" style={{ position: "fixed", bottom: "1vh", right: "0", width: "100%" }}>
                         <button className="btn btn-large waves-effect indigo" style={{ width: "15.5%" }} onClick={logout} >
                             Logout
                         </button>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     )

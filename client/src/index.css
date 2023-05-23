@@ -24,3 +24,7 @@ code {
 .font-bold {
   font-weight: bold;
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
