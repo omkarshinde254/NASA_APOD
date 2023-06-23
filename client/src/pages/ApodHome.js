@@ -2,59 +2,164 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveAs } from 'file-saver';
 import MyDatePicker from "../DatePicker";
+import { ChevronLeftIcon } from '@heroicons/react/solid';
+import { ChevronRightIcon } from '@heroicons/react/solid';
+import { ArrowSmDownIcon } from '@heroicons/react/solid';
+import { CloudDownloadIcon } from '@heroicons/react/solid';
+import nasalogo from "../img/nasa.png"
+// import { FiDownload } from "react-icons/fi";
+
 
 const ApodHome = () => {
     const baseUrl = process.env.REACT_APP_BASE_URL;
-    const [apodData, setApodData] = useState({"T":"M"});
+    const [apodData, setApodData] = useState({ "T": "M" });
     const [count, setDateCtr] = useState(() => { return 0 });
+    const [loading, setLoading] = useState(false);
+
+    async function download_img(url) {
+        // M.toast({ html: 'Downloading ...', classes: 'green black-text' })
+        const name = url.split('/').pop();
+        // console.log(name);
+        let proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
+        // let proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
+        let blob = await fetch(proxyUrl + url).then((r) => r.blob());
+        saveAs(blob, name);
+    }
+
+    function incrementDateCtr() {
+        setDateCtr(prevCount => prevCount + 1);
+        if (count > 0) {
+            setDateCtr(prevCount => prevCount - prevCount);
+        }
+    }
+
+    function decrementDateCtr() {
+        setDateCtr(prevCount => prevCount - 1);
+    }
+
+    // To disable forward arrow when date is current date
+    useEffect(() => {
+        if (count == 0) {
+            document.getElementById('incDate').classList.add('disabled-button');
+        }
+        else {
+            document.getElementById('incDate').classList.remove('disabled-button');
+        }
+    }, [count]);
+
 
     // Api Call
     async function apod() {
-        let fetch_date = new Date()
-        fetch_date.setDate(fetch_date.getDate() + count);
-        if (fetch_date > new Date()) {
-            fetch_date = new Date();
+        try {
+            let fetch_date = new Date()
+            fetch_date.setDate(fetch_date.getDate() + count);
+            if (fetch_date > new Date()) {
+                fetch_date = new Date();
+            }
+
+            let offset = fetch_date.getTimezoneOffset();
+            fetch_date.setMinutes(fetch_date.getMinutes() - offset);
+            let year = fetch_date.getFullYear();
+            let month = (fetch_date.getMonth() + 1).toString().padStart(2, "0");
+            let day = fetch_date.getDate().toString().padStart(2, "0");
+            let estfetch_date = `${year}-${month}-${day}`;
+            // console.log(estfetch_date);
+            // console.log("Final Fetch Date", fetch_date.toISOString().split('T')[0]);
+            const response = await fetch(baseUrl + '/api/nasa_apod?'
+                + new URLSearchParams({ date: estfetch_date })
+                , {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+
+            const data = await response.json();
+            if (data.status == 'error')
+                alert("NASA API looks down.. Please try again later.");
+
+            setApodData(data);
+            // console.log("Apod Data",data);
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
+        } finally {
+            setLoading(false);
         }
-
-        let offset = fetch_date.getTimezoneOffset();
-        fetch_date.setMinutes(fetch_date.getMinutes() - offset);
-        let year = fetch_date.getFullYear();
-        let month = (fetch_date.getMonth() + 1).toString().padStart(2, "0");
-        let day = fetch_date.getDate().toString().padStart(2, "0");
-        let estfetch_date = `${year}-${month}-${day}`;
-        // console.log(estfetch_date);
-        // console.log("Final Fetch Date", fetch_date.toISOString().split('T')[0]);
-        const response = await fetch(baseUrl + '/api/nasa_apod?'
-            + new URLSearchParams({ date: estfetch_date })
-            , {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-
-        const data = await response.json();
-        setApodData(data);
     }
 
-    useEffect(() => {apod();}, [count]);
+    useEffect(() => { apod(); }, [count]);
 
     return (
-        <div>
-            <div className="flex h-screen flex-row bg-[#f0fdf4]">
-                <div class="basis-10/12 p-0.5">
-                    <img src={apodData.url} alt="Image might not be available for this date" className="w-full h-full" />
+        <div className="flex h-screen flex-row bg-[#222831]">
+            {/* Part 1 || Image || */}
+            <div className="flex-none flex-grow-0 flex-shrink-0 basis-10/12 p-0.5">
+                <img src={apodData.url} alt="Image might not be available for this date" className="w-full h-full" />
+            </div>
+
+            {/* Part 2 || Other Stuff || */}
+            <div className="flex-none flex-grow-0 flex-shrink-0 basis-2/12 border-s border-l-[#393E46] h-full w-full">
+                {/* <p className="antialiased text-xl font-bold text-center pt-1 bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text ">Hola !</p> */}
+                <img src={nasalogo} alt="NASA" className="w-auto h-fit pt-4 pl-10 pr-10" />
+                {/* <p className="antialiased text-xl font-bold text-center text-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">Astronomy Picture of Day</p> */}
+                {/* <p className="antialiased text-xl font-bold text-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">Astronomy Picture of Day</p> */}
+                <p className="font-mono antialiased text-xl font-bold text-center text-[#EEEEEE]">Astronomy Picture of Day</p>
+
+                <hr className="w-9/10 border-[#393E46] mx-2 mt-6 pb-1" />
+                <p className="font-mono antialiased text-xl font-bold text-center text-[#EEEEEE] pb-2">Command Center</p>
+                {/* Date Picker */}
+                <div className="pl-2 pr-2"> <MyDatePicker /> </div>
+
+                {/* arrow icon */}
+                <div className="grid grid-cols-2 pt-2">
+                    <div className="flex justify-center">
+                        <button className="rounded-l-lg rounded-r-lg bg-blue-400 w-20 h-10 flex items-center justify-center bg-[#00ADB5]" onClick={(e) => decrementDateCtr()} >
+                            <div> <ChevronLeftIcon className="w-6 h-6 text-[#393E46]" /></div>
+                        </button>
+                    </div>
+                    <div className="flex justify-center">
+                        <button id="incDate" className="rounded-l-lg rounded-r-lg bg-blue-400 w-20 h-10 flex items-center justify-center bg-[#00ADB5]" onClick={(e) => incrementDateCtr()}>
+                            <div> <ChevronRightIcon className="w-6 h-6 text-[#393E46]" /></div>
+                        </button>
+                    </div>
                 </div>
-                <div class="basis-2/12 border-2 border-rose-500">
-                    <p className="antialiased text-xl font-bold text-center pt-1 bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text ">Hola !</p>
-                    {/* <p className="antialiased text-xl font-bold text-center text-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">Astronomy Picture of Day</p> */}
-                    <p className="antialiased text-xl font-bold text-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">Astronomy Picture of Day</p>
-                    
-                    {/* Date Picker */}
-                    <div className="pl-2 pr-2 pt-2"> <MyDatePicker/> </div>
+                {/* Arrows done */}
 
+                {/* Actual Text */}
+                <hr className="w-9/10 border-[#393E46] mx-2 mt-4" />
+                {/* <div className="pl-2 pt-2"> */}
+                <div> <span className="font-mono antialiased absolute left-0 top-0 pl-2 pt-2 text-[#FFFF00] text-3xl">{apodData.title} </span> </div>
+                {/* <div> <span className="font-bold">Title: </span>{apodData.title}</div> */}
+                {/* <div> <span className="font-bold">CopyRight: </span>{apodData.copyright}</div> */}
+                {/* <div> <span className="font-bold">Date: </span>{apodData.date}</div> */}
+                {/* </div> */}
 
+                {/* <p className="font-mono antialiased text-xl font-bold text-center text-[#EEEEEE]">Aasdasdasddddddddddddddddtronomy Picture of Dayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p> */}
+                {/* <div className="w-56 overflow-y-auto">
+                    <div className="h-full">
+                        <div className="bg-gray-200 p-4">asdasdasdasdasdddddddddddddddddddddddddssssssssssssd</div>
+                    </div>
+                </div> */}
 
+                {/* Download Button */}
+                <div className="flex-col absolute bottom-0 pl-1/2 w-1/6 pb-2">
+                    <hr className="w-9/10 border-[#393E46] mx-2 pb-1" />
+                    <p className="font-mono antialiased text-xl font-bold text-center text-[#EEEEEE] pb-2">Download Records</p>
+                    <div className="flex item-center justify-center">
+                        <button className="rounded-lg w-60 h-10 flex items-center justify-center mb-2 font-semibold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 text-white shadow-lg hover:bg-gradient-to-r hover:from-purple-500 hover:via-indigo-500 hover:to-blue-500"
+                            onClick={() => download_img(apodData.hdurl)}>
+
+                            Download HD <CloudDownloadIcon className="w-6 h-6 pl-1 pt-1" />
+                        </button>
+
+                    </div>
+                    <div className="flex item-center justify-center">
+                        <button className="rounded-lg w-60 h-10 flex items-center justify-center mb-2 font-semibold bg-green-500 text-white hover:bg-green-600"
+                            onClick={() => download_img(apodData.url)}>
+                            Download <CloudDownloadIcon className="w-6 h-6 pl-1 pt-1" />
+                        </button>
+                    </div>
+                    <hr className="w-9/10 border-[#393E46] mx-2 pt-1 -mb-2" />
                 </div>
             </div>
         </div>
