@@ -91,25 +91,25 @@ const ApodHome = () => {
     useEffect(() => { apod(); }, [count]);
 
     return (
-        <div className="flex h-screen flex-row bg-[#222831]">
+        <div className="flex h-screen bg-[#222831]">
             {/* Part 1 || Image || */}
-            <div className="flex-none flex-grow-0 flex-shrink-0 basis-10/12 p-0.5">
+            <div className="flex-none flex-grow-0 flex-shrink-0 w-10/12 p-0.5">
                 <img src={apodData.url} alt="Image might not be available for this date" className="w-full h-full" />
             </div>
 
             {/* Part 2 || Other Stuff || */}
-            <div className="flex-none flex-grow-0 flex-shrink-0 basis-2/12 border-s border-l-[#393E46] h-full w-full">
-                {/* <p className="antialiased text-xl font-bold text-center pt-1 bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text ">Hola !</p> */}
+            <div className="flex-none flex-grow-0 flex-shrink-0 w-2/12 border-s border-l-[#393E46]">
+                {/* Logo and Title */}
                 <img src={nasalogo} alt="NASA" className="w-auto h-fit pt-4 pl-10 pr-10" />
                 {/* <p className="antialiased text-xl font-bold text-center text-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">Astronomy Picture of Day</p> */}
                 {/* <p className="antialiased text-xl font-bold text-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">Astronomy Picture of Day</p> */}
                 <p className="font-mono antialiased text-xl font-bold text-center text-[#EEEEEE]">Astronomy Picture of Day</p>
 
+                {/* Command Center */}
                 <hr className="w-9/10 border-[#393E46] mx-2 mt-6 pb-1" />
                 <p className="font-mono antialiased text-xl font-bold text-center text-[#EEEEEE] pb-2">Command Center</p>
                 {/* Date Picker */}
                 <div className="pl-2 pr-2"> <MyDatePicker /> </div>
-
                 {/* arrow icon */}
                 <div className="grid grid-cols-2 pt-2">
                     <div className="flex justify-center">
@@ -125,21 +125,20 @@ const ApodHome = () => {
                 </div>
                 {/* Arrows done */}
 
-                {/* Actual Text */}
-                <hr className="w-9/10 border-[#393E46] mx-2 mt-4" />
-                {/* <div className="pl-2 pt-2"> */}
-                <div> <span className="font-mono antialiased absolute left-0 top-0 pl-2 pt-2 text-[#FFFF00] text-3xl">{apodData.title} </span> </div>
+                {/* Description Text */}
                 {/* <div> <span className="font-bold">Title: </span>{apodData.title}</div> */}
                 {/* <div> <span className="font-bold">CopyRight: </span>{apodData.copyright}</div> */}
                 {/* <div> <span className="font-bold">Date: </span>{apodData.date}</div> */}
-                {/* </div> */}
 
-                {/* <p className="font-mono antialiased text-xl font-bold text-center text-[#EEEEEE]">Aasdasdasddddddddddddddddtronomy Picture of Dayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p> */}
-                {/* <div className="w-56 overflow-y-auto">
-                    <div className="h-full">
-                        <div className="bg-gray-200 p-4">asdasdasdasdasdddddddddddddddddddddddddssssssssssssd</div>
-                    </div>
-                </div> */}
+                {/* Yellow title floating in left */}
+                <div> <span className="font-mono antialiased absolute left-0 top-0 pl-2 pt-2 text-[#FFFF00] text-3xl">{apodData.title} </span> </div>
+
+                <hr className="w-9/10 border-[#393E46] mx-2 mt-4" />
+                <p className="font-mono antialiased text-xl font-bold text-center text-[#EEEEEE] pb-2 pt-1">Description:</p>
+                <div className="h-56 w-9/10 mx-2">
+                    <p className="w-9/10 h-56 antialiased text-base text-[#EEEEEE] overflow-y-auto">Astronomy Picture of Dayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+                </div>
+                {/* Description Done */}
 
                 {/* Download Button */}
                 <div className="flex-col absolute bottom-0 pl-1/2 w-1/6 pb-2">
@@ -161,6 +160,7 @@ const ApodHome = () => {
                     </div>
                     <hr className="w-9/10 border-[#393E46] mx-2 pt-1 -mb-2" />
                 </div>
+                {/* Download Button Done */}
             </div>
         </div>
     );
