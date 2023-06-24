@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 import MyDatePicker from "../DatePicker";
 import { ChevronLeftIcon } from '@heroicons/react/solid';
 import { ChevronRightIcon } from '@heroicons/react/solid';
-import { ArrowSmDownIcon } from '@heroicons/react/solid';
+import { Spinner } from "@material-tailwind/react";
 import { CloudDownloadIcon } from '@heroicons/react/solid';
 import nasalogo from "../img/nasa.png"
 import nasadefault from "../img/nasalogo.png"
@@ -66,6 +66,7 @@ const ApodHome = () => {
             let estfetch_date = `${year}-${month}-${day}`;
             // console.log(estfetch_date);
             // console.log("Final Fetch Date", fetch_date.toISOString().split('T')[0]);
+            setLoading(true);
             const response = await fetch(baseUrl + '/api/nasa_apod?'
                 + new URLSearchParams({ date: estfetch_date })
                 , {
@@ -81,7 +82,7 @@ const ApodHome = () => {
                 data.url = nasadefault
                 data.title = data.title + ' (Video)';
             }
-            if (data.status == 'error'){
+            if (data.status == 'error') {
                 data.url = nasadefault
                 data.title = 'NASA API looks down !!';
             }
@@ -101,8 +102,8 @@ const ApodHome = () => {
     return (
         <div className="flex h-screen bg-[#222831]">
             {/* Part 1 || Image || */}
-            <div className="flex-none flex-grow-0 flex-shrink-0 w-10/12 p-0.5">
-                <img src={apodData.url} alt="Image might not be available for this date" className="w-full h-full" />
+            <div className="flex flex-grow-0 flex-shrink-0 w-10/12 p-0.5 justify-center items-center h-screen">
+                {loading ? <Spinner className="h-16 w-16 text-yellow-500"/> : <img src={apodData.url } alt="" className="w-full h-full" />}
             </div>
 
             {/* Part 2 || Other Stuff || */}
@@ -139,7 +140,11 @@ const ApodHome = () => {
                 {/* <div> <span className="font-bold">Date: </span>{apodData.date}</div> */}
 
                 {/* Yellow title floating in left */}
-                <div> <span className="font-mono antialiased absolute left-0 top-0 pl-2 pt-2 text-[#FFFF00] text-3xl">{apodData.title} </span> </div>
+                <div>
+                    <span className="font-mono antialiased absolute left-0 top-0 pl-2 pt-2 text-[#FFFF00] text-3xl">
+                        {loading ? "": apodData.title}
+                    </span>
+                </div>
 
                 <hr className="w-9/10 border-[#393E46] mx-1 mt-4" />
                 <p className="font-mono antialiased text-xl font-bold text-center text-[#EEEEEE] pb-2 pt-1">Description:</p>

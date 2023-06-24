@@ -124,7 +124,7 @@ app.get('/', (req, res) => {
 // });
 
 app.get('/api/nasa_apod', async (req, res) => {
-    console.log("Calling API")
+    // console.log("Calling API")
     fetch('https://api.nasa.gov/planetary/apod?'
         + new URLSearchParams({
             'date': req.query.date,
@@ -138,7 +138,7 @@ app.get('/api/nasa_apod', async (req, res) => {
             return response.json();
         }
     ).then(data => {
-        console.log("Apod Data- ", data);
+        // console.log("Apod Data- ", data);
         res.send(data);
     })
     .catch(
