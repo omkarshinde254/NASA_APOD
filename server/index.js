@@ -124,22 +124,29 @@ app.get('/', (req, res) => {
 // });
 
 app.get('/api/nasa_apod', async (req, res) => {
-    try {
-        // console.log("Calling for date- ", req.query.date)
-        const response = await fetch('https://api.nasa.gov/planetary/apod?'
+    console.log("Calling API")
+    fetch('https://api.nasa.gov/planetary/apod?'
         + new URLSearchParams({
-                'date': req.query.date,
-                'api_key': process.env.NASA_APOD_KEY,
-            })
-        );
-        const data = await response.json();
-        // console.log("Apod Response- ",data);
+            'date': req.query.date,
+            'api_key': process.env.NASA_APOD_KEY,
+        })
+    ).then(
+        response => {
+            // console.log("Apod Input- ", response.json());
+            // const data = await response.json();
+            // console.log("Apod Response- ", response.json());
+            return response.json();
+        }
+    ).then(data => {
+        console.log("Apod Data- ", data);
         res.send(data);
-
-    } catch (error) {
-        console.log("Error- ", error)
-        res.send({ 'status': 'error' });
-    }
+    })
+    .catch(
+        error => {
+            console.log("Error- ", error);
+            res.send({ 'status': 'error' });
+        }
+    )
 });
 
 app.listen(3001, () => {

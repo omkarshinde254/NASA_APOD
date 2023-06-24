@@ -7,6 +7,7 @@ import { ChevronRightIcon } from '@heroicons/react/solid';
 import { ArrowSmDownIcon } from '@heroicons/react/solid';
 import { CloudDownloadIcon } from '@heroicons/react/solid';
 import nasalogo from "../img/nasa.png"
+import nasadefault from "../img/nasalogo.png"
 // import { FiDownload } from "react-icons/fi";
 
 
@@ -75,8 +76,15 @@ const ApodHome = () => {
                 })
 
             const data = await response.json();
-            if (data.status == 'error')
-                alert("NASA API looks down.. Please try again later.");
+            if (data.media_type == 'video') {
+                data.explanation = 'Video is not supported by this app !! Here is the url to the video- \n' + data.url;
+                data.url = nasadefault
+                data.title = data.title + ' (Video)';
+            }
+            if (data.status == 'error'){
+                data.url = nasadefault
+                data.title = 'NASA API looks down !!';
+            }
 
             setApodData(data);
             // console.log("Apod Data",data);
@@ -133,15 +141,15 @@ const ApodHome = () => {
                 {/* Yellow title floating in left */}
                 <div> <span className="font-mono antialiased absolute left-0 top-0 pl-2 pt-2 text-[#FFFF00] text-3xl">{apodData.title} </span> </div>
 
-                <hr className="w-9/10 border-[#393E46] mx-2 mt-4" />
+                <hr className="w-9/10 border-[#393E46] mx-1 mt-4" />
                 <p className="font-mono antialiased text-xl font-bold text-center text-[#EEEEEE] pb-2 pt-1">Description:</p>
-                <div className="h-56 w-9/10 mx-2">
-                    <p className="w-9/10 h-56 antialiased text-base text-[#EEEEEE] overflow-y-auto">Astronomy Picture of Dayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+                <div className="h-auto w-9/10 mx-2">
+                    <p className="w-9/10 h-56 antialiased text-base text-[#EEEEEE] overflow-x-auto overflow-y-auto whitespace-normal break-words scroll-smooth">{apodData.explanation}</p>
                 </div>
                 {/* Description Done */}
 
                 {/* Download Button */}
-                <div className="flex-col absolute bottom-0 pl-1/2 w-1/6 pb-2">
+                <div className="flex-col absolute bottom-0 pl-1/2 w-1/6 pb-4">
                     <hr className="w-9/10 border-[#393E46] mx-2 pb-1" />
                     <p className="font-mono antialiased text-xl font-bold text-center text-[#EEEEEE] pb-2">Download Records</p>
                     <div className="flex item-center justify-center">
@@ -158,7 +166,7 @@ const ApodHome = () => {
                             Download <CloudDownloadIcon className="w-6 h-6 pl-1 pt-1" />
                         </button>
                     </div>
-                    <hr className="w-9/10 border-[#393E46] mx-2 pt-1 -mb-2" />
+                    <hr className="w-9/10 border-[#393E46] mx-2 pt-1 -mb-4" />
                 </div>
                 {/* Download Button Done */}
             </div>
