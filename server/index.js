@@ -3,8 +3,8 @@ const app = express();
 const cors = require('cors');
 // const mongoose = require('mongoose');
 // const user = require('./models/user.model');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+// const jwt = require('jsonwebtoken');
+// const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 // Enable CORS
