@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { saveAs } from 'file-saver';
 import MyDatePicker from "../DatePicker";
 import { ChevronLeftIcon } from '@heroicons/react/solid';
@@ -8,17 +8,32 @@ import { Spinner } from "@material-tailwind/react";
 import { CloudDownloadIcon } from '@heroicons/react/solid';
 import nasalogo from "../img/nasa.png"
 import nasadefault from "../img/nasalogo.png"
-// import { FiDownload } from "react-icons/fi";
-
+import { useSelector, useDispatch } from "react-redux";
+import { decrementCtr, incrementCtr } from "../actions";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ApodHome = () => {
     const baseUrl = process.env.REACT_APP_BASE_URL;
     const [apodData, setApodData] = useState({ "T": "M" });
-    const [count, setDateCtr] = useState(() => { return 0 });
+    // const [count, setDateCtr] = useState(() => { return 0 });
     const [loading, setLoading] = useState(false);
+    const count = useSelector((state) => state);
+    const dispatch = useDispatch();
+    // console.log("My Date Counter--> ",myDateCounter);
 
     async function download_img(url) {
         // M.toast({ html: 'Downloading ...', classes: 'green black-text' })
+        toast.success('Downloading ...', {
+            position: "top-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        });
         const name = url.split('/').pop();
         // console.log(name);
         let proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
@@ -27,23 +42,25 @@ const ApodHome = () => {
         saveAs(blob, name);
     }
 
-    function incrementDateCtr() {
-        setDateCtr(prevCount => prevCount + 1);
-        if (count > 0) {
-            setDateCtr(prevCount => prevCount - prevCount);
-        }
-    }
+    // function incrementDateCtr() {
+    //     setDateCtr(prevCount => prevCount + 1);
+    //     if (count > 0) {
+    //         setDateCtr(prevCount => prevCount - prevCount);
+    //     }
+    // }
 
-    function decrementDateCtr() {
-        setDateCtr(prevCount => prevCount - 1);
-    }
+    // function decrementDateCtr() {
+    //     setDateCtr(prevCount => prevCount - 1);
+    // }
 
     // To disable forward arrow when date is current date
     useEffect(() => {
-        if (count == 0) {
+        if (count >= 0) {
+            // document.getElementById('incDate').setAttribute("disabled", "");
             document.getElementById('incDate').classList.add('disabled-button');
         }
         else {
+            // document.getElementById('incDate').removeAttribute("disabled");
             document.getElementById('incDate').classList.remove('disabled-button');
         }
     }, [count]);
@@ -103,7 +120,7 @@ const ApodHome = () => {
         <div className="flex h-screen bg-[#222831]">
             {/* Part 1 || Image || */}
             <div className="flex flex-grow-0 flex-shrink-0 w-10/12 p-0.5 justify-center items-center h-screen">
-                {loading ? <Spinner className="h-16 w-16 text-yellow-500"/> : <img src={apodData.url } alt="" className="w-full h-full" />}
+                {loading ? <Spinner className="h-16 w-16 text-yellow-500" /> : <img src={apodData.url} alt="" className="w-full h-full" />}
             </div>
 
             {/* Part 2 || Other Stuff || */}
@@ -122,12 +139,12 @@ const ApodHome = () => {
                 {/* arrow icon */}
                 <div className="grid grid-cols-2 pt-2">
                     <div className="flex justify-center">
-                        <button className="rounded-l-lg rounded-r-lg bg-blue-400 w-20 h-10 flex items-center justify-center bg-[#00ADB5]" onClick={(e) => decrementDateCtr()} >
+                        <button className="rounded-l-lg rounded-r-lg bg-blue-400 w-20 h-10 flex items-center justify-center bg-[#00ADB5]" onClick={() => dispatch(decrementCtr())} >
                             <div> <ChevronLeftIcon className="w-6 h-6 text-[#393E46]" /></div>
                         </button>
                     </div>
                     <div className="flex justify-center">
-                        <button id="incDate" className="rounded-l-lg rounded-r-lg bg-blue-400 w-20 h-10 flex items-center justify-center bg-[#00ADB5]" onClick={(e) => incrementDateCtr()}>
+                        <button id="incDate" className="rounded-l-lg rounded-r-lg bg-blue-400 w-20 h-10 flex items-center justify-center bg-[#00ADB5]" onClick={() => dispatch(incrementCtr())}>
                             <div> <ChevronRightIcon className="w-6 h-6 text-[#393E46]" /></div>
                         </button>
                     </div>
@@ -142,7 +159,7 @@ const ApodHome = () => {
                 {/* Yellow title floating in left */}
                 <div>
                     <span className="font-mono antialiased absolute left-0 top-0 pl-2 pt-2 text-[#FFFF00] text-3xl">
-                        {loading ? "": apodData.title}
+                        {loading ? "" : apodData.title}
                     </span>
                 </div>
 
@@ -175,198 +192,21 @@ const ApodHome = () => {
                 </div>
                 {/* Download Button Done */}
             </div>
+            <ToastContainer
+                position="top-left"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 }
 
-
-
-// const ApodHome = () => {
-//     const baseurl = process.env.REACT_APP_BASE_URL;
-//     const [apod_data, setApodData] = useState({});
-//     const [count, setDateCtr] = useState(() => { return 0 });
-
-//     async function download_img(url) {
-//         M.toast({ html: 'Downloading ...', classes: 'green black-text' })
-//         const name = url.split('/').pop();
-//         // console.log(name);
-//         let proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
-//         let blob = await fetch(proxyUrl + url).then((r) => r.blob());
-//         saveAs(blob, name);
-//     }
-
-//     async function apod() {
-//         // console.log('Calling apod api');
-//         let fetch_date = new Date()
-//         // console.log("Fetch Date", fetch_date);
-//         // console.log("Count", count);
-//         fetch_date.setDate(fetch_date.getDate() + count);
-//         if (fetch_date > new Date()) {
-//             fetch_date = new Date();
-//         }
-//         let offset = fetch_date.getTimezoneOffset();
-//         fetch_date.setMinutes(fetch_date.getMinutes() - offset);
-//         let year = fetch_date.getFullYear();
-//         let month = (fetch_date.getMonth() + 1).toString().padStart(2, "0");
-//         let day = fetch_date.getDate().toString().padStart(2, "0");
-//         let estfetch_date = `${year}-${month}-${day}`;
-//         // console.log(estfetch_date);
-
-//         // console.log("Final Fetch Date", fetch_date.toISOString().split('T')[0]);
-//         const response = await fetch(baseurl + '/api/nasa_apod?'
-//             + new URLSearchParams({ date: estfetch_date })
-//             , {
-//                 method: 'GET',
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                 }
-//             })
-
-//         const data = await response.json();
-//         setApodData(data);
-//     }
-
-//     function incrementDateCtr() {
-//         setDateCtr(prevCount => prevCount + 1);
-//         if (count > 0) {
-//             setDateCtr(prevCount => prevCount - prevCount);
-//         }
-//     }
-
-//     function decrementDateCtr() {
-//         setDateCtr(prevCount => prevCount - 1);
-//     }
-
-//     useEffect(() => {
-//         apod();
-//     }, [count]);
-
-//     useEffect(() => {
-//         if (count == 0) {
-//             document.getElementById('forward_date').classList.add('disabled');
-//         }
-//         else {
-//             document.getElementById('forward_date').classList.remove('disabled');
-//         }
-//     }, [count]);
-
-//     // async function onClickHandler(v) {
-//     //     if (v === 'l') {
-//     //         await setDateCtr(date_ctr - 1);
-//     //     }
-//     //     else if (v === 'r') {
-//     //         await setDateCtr(date_ctr + 1);
-//     //     }
-
-//     //     if (date_ctr > 0) {
-//     //         await setDateCtr(0);
-//     //     }
-
-//     //     // console.log(date_ctr)
-//     //     await apod();
-//     // }
-
-//     useEffect(() => {
-//         // const token = localStorage.getItem('token');
-//         // if (token) {
-//         //     const user = JSON.parse(atob(token.split('.')[1]));
-//         //     // console.log("Decoded Token", user);
-//         //     if (user) {
-//         //         void 0;
-//         //         // console.log("Returning user");
-//         //         // setUserToken(JSON.parse(atob(localStorage.getItem('token').split('.')[1])));
-//         //         // const usertoken = 
-//         //         // setUserToken(user);
-//         //         // console.log("Setting  up user state")
-//         //     }
-//         //     else {
-//         //         localStorage.removeItem('token');
-//         //         navigate('/login');
-//         //         return;
-//         //     }
-//         // }
-//         // else {
-//         //     navigate('/login');
-//         //     return;
-//         // }
-//         apod();
-//     }, []);
-//     // const usertoken = JSON.parse(atob(localStorage.getItem('token').split('.')[1]));
-//     // setUserToken(user);
-
-//     return (
-//         <div className="row" style={{ padding: "0px 0px 0px 0px" }}>
-//             <div className="col s10" style={{ padding: "2px 2px 2px 2px" }}>
-//                 <img src={apod_data.url}
-//                     style={{ width: "100%", height: "99vh" }}
-//                     alt="Hmm ... Maybe Image is not available for this date."
-//                 >
-//                 </img>
-//             </div>
-//             <div className="col s2 left-align" style={{ paddingLeft: "20px" }}>
-//                 <div className="row">
-//                     <h5 className="pink-text center-align">-- Welcome to --</h5>
-//                 </div>
-//                 <div className="row">
-//                     <h6 className="font-bold indigo-text">Astronomy Picture of the Day</h6>
-//                     {/* <div className="divider"></div> */}
-//                     <input type="text" class="datepicker" />
-//                     <br></br>
-//                     <div className="row">
-//                         <div className="col s6 center-align">
-//                             <button className="btn waves-effect pink" style={{ width: "70%" }}
-//                                 onClick={(e) => decrementDateCtr()}
-//                             // onClick={apod}
-//                             >
-//                                 <i className="material-icons" style={{ fontSize: "25px" }}>chevron_left</i>
-//                             </button>
-//                         </div>
-//                         <div className="col s6 center-align">
-//                             <button className="btn waves-effect pink" style={{ width: "70%" }}
-//                                 onClick={(e) => incrementDateCtr()}
-//                                 id="forward_date"
-//                             // onClick={apod}
-//                             >
-//                                 <i className="material-icons" style={{ fontSize: "25px" }}>chevron_right</i>
-//                             </button>
-//                         </div>
-//                     </div>
-//                     <div className="divider"></div>
-//                     <h6> <div className="font-bold">Title: </div> {apod_data.title}</h6>
-//                     <h6> <div className="font-bold">Date: </div> {apod_data.date}</h6>
-//                     <h6> <div className="font-bold">CopyRight: </div> {apod_data.copyright}</h6>
-//                 </div>
-
-//                 <div className="row right-align">
-//                     <div className="col s2" style={{ position: "fixed", bottom: "10vh", right: "0", width: "100%" }}>
-//                         <button className="btn btn-large waves-effect orange" style={{ width: "15.5%" }}
-//                             onClick={() => download_img(apod_data.hdurl)}
-//                         >
-//                             Download HD <i className="material-icons" style={{ fontSize: "20px" }}>cloud_download</i>
-//                         </button>
-//                     </div>
-//                 </div>
-
-//                 <div className="row right-align">
-//                     <div className="col s2" style={{ position: "fixed", bottom: "1vh", right: "0", width: "100%" }}>
-//                         <button className="btn btn-large waves-effect green" style={{ width: "15.5%" }}
-//                             onClick={() => download_img(apod_data.url)} >
-//                             Download <i className="material-icons" style={{ fontSize: "20px" }}>file_download</i>
-//                         </button>
-//                     </div>
-//                 </div>
-
-
-//                 {/* <div className="row right-align">
-//                     <div className="col s2" style={{ position: "fixed", bottom: "1vh", right: "0", width: "100%" }}>
-//                         <button className="btn btn-large waves-effect indigo" style={{ width: "15.5%" }} onClick={logout} >
-//                             Logout
-//                         </button>
-//                     </div>
-//                 </div> */}
-//             </div>
-//         </div>
-//     )
-// };
 
 export default ApodHome;
