@@ -26,7 +26,7 @@ const ApodHome = () => {
         // M.toast({ html: 'Downloading ...', classes: 'green black-text' })
         toast.success('Downloading ...', {
             position: "top-left",
-            autoClose: 5000,
+            autoClose: 6000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -194,7 +194,7 @@ const ApodHome = () => {
             </div>
             <ToastContainer
                 position="top-left"
-                autoClose={5000}
+                autoClose={6000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
