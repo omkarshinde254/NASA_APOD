@@ -5,8 +5,8 @@ NASA APOD Viewer is a web app that displays the Astronomy Picture of the Day (AP
 ## Features
 
 - Browse through the APOD archive from 1995 to present
-- Search for APOD by date or keyword
-- Share the APOD images on Facebook, Twitter, or Pinterest
+- Search for APOD by date
+- Download the APOD images in high resolution (HD) or low resolution (SD)
 - View the APOD images in full screen mode
 - Learn more about the APOD images and their sources
 
